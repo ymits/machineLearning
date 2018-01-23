@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/league.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown
+					    data-separator="\n---\n$"
+					    data-separator-vertical="\n--\n$">
+					    <script type="text/template">
+## 試しに為替レートをNNで学習させてみた
+
+### G3-K 三井
+
+---
+
+## 用意したデータ
+
+### GMOクリック証券のヒストリカルデータサービス
+
+FXネオ取引のヒストリカルデータ（BID/ASKレートの始値・高値・安値・終値）を、1分足の粒度でダウンロード可能
+
+---
+
+## 入力ノード
+
+### 直近１分足を10本
+
+bid/askの4本値が10本あるため計80ノード
+
+![データ](image/data.png)
+
+--
+
+### を、直列化して
+
+![直列化](image/fratten.png)
+
+--
+
+### ノーマライズ化した値
+
+![ノーマライズ](image/normalize.png)
+
+---
+
+## 出力ノード
+
+### １分後の1分足
+
+結果は以下の3の値をもつ１ホットラベル
+
+- 購入価格(Ask)より1分後の売却価格(Bid)が高ければTrue
+- 売却価格(Bid)より1分後の購入価格(Ask)が安ければTrue
+- 上記2つのどちらでもない場合はTrue
+
+--
+
+### こんな感じ
+
+![ノーマライズ](image/out.png)
+
+---
+
+## ニューラルネットワークの設定
+
+### 各種設定値
+
+- 隠れ層
+- 活性化関数
+- 重みの初期値設定
+- オプティマイザ
+- 学習係数とWeightDecay
+
+--
+
+### 隠れ層
+
+- 5層
+- 各100ノード
+
+--
+
+### 活性化関数
+
+- relu
+
+--
+
+### 重みの初期値設定
+
+- 「Heの初期値」
+
+```
+sqrt(2.0 / n)
+```
+
+--
+
+### オプティマイザ
+
+- SGD（確率的勾配降下法）
+
+--
+
+### 学習係数とWeightDecay
+
+- ランダム
+
+---
+
+## 学習データ
+
+### 2016年1月 1ヶ月間の1分足
+
+約 15,000本
+
+---
+
+## テストデータ
+
+### 2017年1月 1ヶ月間の1分足
+
+約 15,000本
+
+---
+
+## 結果は
+
+---
+
+![結果](image/result.png)
+
+---
+
+## 残念
+					    </script>
+					</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				transition: 'convex',
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
