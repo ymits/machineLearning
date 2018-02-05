@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import glob
 import pandas as pd
 import os
@@ -7,7 +9,7 @@ import numpy as np
 def load_csv(path):
     all_files = glob.glob(os.path.join(path, "*.csv"), recursive=True)
 
-    df_from_each_file = (pd.read_csv(f, header=1, names=('time', 'bid_op', 'bid_hi', 'bid_lo', 'bid_cl', 'ask_op', 'ask_hi', 'ask_lo', 'ask_cl') ) for f in all_files)
+    df_from_each_file = (pd.read_csv(f, names=('time', 'bid_op', 'bid_hi', 'bid_lo', 'bid_cl', 'ask_op', 'ask_hi', 'ask_lo', 'ask_cl'), encoding="shift-jis" ) for f in all_files)
     df = pd.concat(df_from_each_file, ignore_index=True)
     df = df.sort_values(by='time')
 
