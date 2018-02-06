@@ -59,7 +59,7 @@ def createBarData():
     bar_with_ma_1d_df = pd.DataFrame(bars_with_ma_1d[75:], columns=['time', 'op', 'hi', 'lo', 'cl', '10ma', '25ma', '75ma'])
     bar_with_ma_1d_df.to_csv("data/bar_1d.csv", index=False)
 
-def load_bars(bar_num, forward=1, diff = 0.1):
+def load_bars(bar_num, forward=1, diff = 0.1, normalize=True):
     parser = lambda date: datetime.strptime(date, '%Y/%m/%d %H:%M:%S')
     bars30m = pd.read_csv("data/bar_30m.csv", parse_dates=[0], date_parser = parser)
     bars1d = pd.read_csv("data/bar_1d.csv", parse_dates=[0], date_parser = parser)
@@ -84,6 +84,10 @@ def load_bars(bar_num, forward=1, diff = 0.1):
             continue
 
         train_data = np.append(train_30m_data.iloc[:,1:].values, train_1d_data.iloc[:,1:].values, axis=1)
+        # ノーマライズ処理
+        if normalize:
+            train_data = train_data - np.amin(train_data[:,3:4])
+            train_data = train_data / np.amax(train_data[:,3:4])
         trains.append(train_data)
 
         test_data = [
